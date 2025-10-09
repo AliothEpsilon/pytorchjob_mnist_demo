@@ -1,0 +1,50 @@
+# 环境设置：local(本地Windows)或k8s(Kubernetes集群)
+environment: "local"  # 切换环境的关键选项
+
+train:
+  epochs: 10
+  batch_size: 64  # RTX 4060 8GB适合的批次大小；K8s环境可适当增大，比如256、512
+  lr: 0.001
+  print_freq: 10
+  save_model: true
+  save_freq: 1
+
+# 学习率调度器配置
+lr_scheduler:
+  type: "StepLR"  # 可选: StepLR, CosineAnnealingLR
+  step_size: 5    # StepLR参数: 每隔多少个epoch调整一次
+  gamma: 0.5      # StepLR参数: 调整倍数
+  T_max: 10       # CosineAnnealingLR参数: 学习率周期
+
+dist:
+  backend: "gloo"  # Windows系统只能使用gloo后端；K8s可使用nccl
+  master_addr: "localhost"  # K8s环境下会被自动设置
+  master_port: "12355"
+  rank: -1  # K8s环境下会被自动设置
+  world_size: -1  # 自动检测GPU数量
+  local_rank: 0  # K8s环境下会被自动设置
+
+model:
+  image_size: 28
+  patch_size: 4  # 不再硬编码，可在配置中修改
+  input_dim: 16  # 应等于patch_size的平方 (4x4=16)
+  dim: 32  # 减小维度降低显存占用，K8s节点可能有更大显存，可调大，如64
+  num_heads: 2
+  num_layers: 2
+  num_classes: 10
+  dropout: 0.1
+
+data:
+  data_root: "./data"  # Windows本地路径；K8s可设置为挂载路径
+  num_workers: 0  # Windows多进程数据加载容易出错，设为0；K8s可增大
+  pin_memory: false  # Windows建议关闭；K8s可开启
+
+log:
+  log_dir: "./logs"  # K8s可设置为挂载路径
+  log_level: "INFO"
+  log_file: "train.log"
+
+checkpoint:
+  checkpoint_dir: "./checkpoints"  # K8s可设置为挂载路径
+  resume: false
+  resume_epoch: -1
