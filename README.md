@@ -90,7 +90,7 @@ python train.py --config config.yaml --local_rank $LOCAL_RANK
 
 曲线：训练结束后生成checkpoints/training_curves.png（损失 / 准确率曲线）。
 
-4. 模型推理
+### 4. 模型推理
 
 准备测试图片：在test_digit/目录放入手写数字图片（如test_digit0.png，建议 28x28 灰度图）；
 
