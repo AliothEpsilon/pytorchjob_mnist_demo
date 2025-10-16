@@ -22,7 +22,7 @@ dist:
   master_port: "12355"
   rank: -1  # K8s环境下会被自动设置
   world_size: -1  # 自动检测GPU数量
-  local_rank: 0  # K8s环境下会被自动设置
+  local_rank: 0   # K8s环境下会被自动设置
 
 model:
   image_size: 28
